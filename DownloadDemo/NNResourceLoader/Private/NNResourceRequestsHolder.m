@@ -43,6 +43,9 @@
         if ([_requestContainer containsObject:request]) {
             
         } else {
+            if (_requestContainer.count) {
+                [request configType:_requestContainer.firstObject.type];
+            }
             request.NN_Holder = self;
             [_requestContainer addObject:request];
         }
@@ -53,6 +56,7 @@
     if (self.requestContainer.count < 2) {
         [request.NN_Holder.task cancel];
     } else {
+        [request configType:NNResourceRequestType_Canceling];
         if (request.canceled) {
             request.canceled(request.URLPath);
         }
@@ -75,6 +79,7 @@
              */
         }];
     } else {
+          [request configType:NNResourceRequestType_Suspended];
         if (request.pause) {
             request.pause(request.URLPath);
         }

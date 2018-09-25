@@ -9,7 +9,18 @@
 #import "DownloadCell.h"
 #import "NNResourceRequest.h"
 
+
+@interface DownloadCell()
+
+
+@property (nonatomic,   weak) NNResourceRequest *weakRequest;
+
+@end
+
 @implementation DownloadCell
+
+
+
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -24,12 +35,26 @@
 }
 
 - (void)updateWithModel:(id)model {
+    //  切断上一个model 与当前model之间的联系
+    
+    
     if ([model isKindOfClass:[NNResourceRequest class]]) {
+        
+        _weakRequest.begin = nil;
+        _weakRequest.canceled = nil;
+        _weakRequest.progress = nil;
+        _weakRequest.completion = nil;
+        
         NNResourceRequest *request = (NNResourceRequest *)model;
+        _weakRequest = request;
+        
         [self updateWithType:request.type];
         
         __weak typeof(self) weakSelf = self;
         __weak typeof(request) weakRequest = request;
+        
+        
+//TODO: callback -> model -> UI
         
         request.begin = ^(NSString *URLPath) {
             NSLog(@"任务开始了");
@@ -54,6 +79,7 @@
                 NSLog(@"其他情况的被动取消任务");
                 NSLog(@"info : %@", info);
             }
+//FIXME: 绑定了控件和逻辑，需要修改～～～
             // 更新view
             [self updateWithType:type];
         };
@@ -73,6 +99,7 @@
         };
         
         self.resumeTaskBlock = ^{
+            // 检查所有的相同任务，判断是否需要更新对应的状态
             [request resume];
         };
         
@@ -80,7 +107,7 @@
             [request suspend];
         };
         self.cancelTaskBlock = ^{
-            [request canceled];
+            [request cancel];
         };
     }
     

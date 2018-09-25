@@ -24,6 +24,7 @@
 - (void)cancelRequest:(NNResourceRequest *)request;
 - (void)suspendRequest:(NNResourceRequest *)request;
 
+
 - (void)removeAllRequests;
 
 @end

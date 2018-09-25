@@ -27,7 +27,11 @@
     
     NSArray *urlPaths = @[
                           @"https://github.com/airbnb/lottie-ios/archive/master.zip",
+                        
                           @"https://devstreaming-cdn.apple.com/videos/app_store/Grailr_Developer_Insight/Grailr_Developer_Insight_hd.mp4?dl=1",
+                           @"https://devstreaming-cdn.apple.com/videos/app_store/Grailr_Developer_Insight/Grailr_Developer_Insight_hd.mp4?dl=1",
+                           @"https://devstreaming-cdn.apple.com/videos/app_store/Grailr_Developer_Insight/Grailr_Developer_Insight_hd.mp4?dl=1",
+                          
                           @"https://cdn.pixabay.com/photo/2018/08/02/16/34/sunrise-3579931__480.jpg",
                           @"https://cdn.pixabay.com/photo/2018/02/27/21/55/belly-3186730__480.jpg",
                           @"https://cdn.pixabay.com/photo/2017/12/06/20/23/glasses-3002608__480.jpg",
