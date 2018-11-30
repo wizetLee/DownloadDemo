@@ -200,14 +200,36 @@
     BOOL result = false;
     
     NSDictionary *resumeDictionary = [self resuemDataPlist:resumeData];
-    NSString *resumeDatafilename = resumeDictionary[[self _keyForResumeInfoTempfilename]];
+    NSString *resumeDataFilename = resumeDictionary[[self _keyForResumeInfoTempfilename]];
+    // iOS12  ： 解决方案来自 https://juejin.im/post/5bf7beae51882508082578f7 https://github.com/SYFH/FKDownloader
+    if (!resumeDataFilename) {
+        id root = nil;
+        id keyedUnarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:resumeData];
+        @try {
+            if (@available(iOS 9.0, *)) {
+                root = [keyedUnarchiver decodeTopLevelObjectForKey:@"NSKeyedArchiveRootObjectKey" error:nil];
+            }
+            if (root == nil) {
+                if (@available(iOS 9.0, *)) {
+                    root = [keyedUnarchiver decodeTopLevelObjectForKey:NSKeyedArchiveRootObjectKey error:nil];
+                }
+            }
+        } @catch(NSException *exception) { }
+        [keyedUnarchiver finishDecoding];
+        if ([root isKindOfClass:[NSDictionary class]]) {
+            resumeDictionary = [NSDictionary dictionaryWithDictionary:root];
+            resumeDataFilename = resumeDictionary[[self _keyForResumeInfoTempfilename]];
+        }
+    }
+   
+    
 #if DEBUG
-    NSAssert(resumeDatafilename , @"更换filename的key，需要修改");
+    NSAssert(resumeDataFilename , @"更换filename的key，需要修改");
 #endif
     
     if (URLPath
-        && resumeDatafilename
-        && [self moveTmpToCacheDirectory:resumeDatafilename]) {
+        && resumeDataFilename
+        && [self moveTmpToCacheDirectory:resumeDataFilename]) {
        
         NSMutableDictionary *tmpDic = [NSMutableDictionary dictionary];
         for (NSString *key in resumeDictionary.allKeys) {
